@@ -1,0 +1,69 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Process {
+  associatedDevice String?
+  createdAt        DateTime           @default(now())
+  id               String             @id @default(cuid())
+  linkedDevice     String?
+  name             String?
+  pid              Int?
+  status           EnumProcessStatus?
+  updatedAt        DateTime           @updatedAt
+}
+
+model Connection {
+  connectionType EnumConnectionConnectionType?
+  createdAt      DateTime                      @default(now())
+  device         Device?                       @relation(fields: [deviceId], references: [id])
+  deviceId       String?
+  id             String                        @id @default(cuid())
+  status         EnumConnectionStatus?
+  updatedAt      DateTime                      @updatedAt
+}
+
+model Device {
+  connections Connection[]
+  createdAt   DateTime              @default(now())
+  deviceType  EnumDeviceDeviceType?
+  id          String                @id @default(cuid())
+  name        String?
+  status      EnumDeviceStatus?
+  updatedAt   DateTime              @updatedAt
+}
+
+model User {
+  createdAt   DateTime @default(now())
+  email       String?
+  id          String   @id @default(cuid())
+  password    String?
+  phoneNumber String?
+  updatedAt   DateTime @updatedAt
+  username    String?
+}
+
+enum EnumProcessStatus {
+  Option1
+}
+
+enum EnumConnectionConnectionType {
+  Option1
+}
+
+enum EnumConnectionStatus {
+  Option1
+}
+
+enum EnumDeviceDeviceType {
+  Option1
+}
+
+enum EnumDeviceStatus {
+  Option1
+}
