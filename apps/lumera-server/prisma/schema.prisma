@@ -1,0 +1,61 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Protocol {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  name        String?
+  streams     Stream[]
+  updatedAt   DateTime @updatedAt
+  version     String?
+}
+
+model Stream {
+  connections Connection[]
+  createdAt   DateTime          @default(now())
+  createdBy   String?
+  id          String            @id @default(cuid())
+  protocol    Protocol?         @relation(fields: [protocolId], references: [id])
+  protocolId  String?
+  status      EnumStreamStatus?
+  streamUrl   String?
+  updatedAt   DateTime          @updatedAt
+}
+
+model User {
+  connections Connection[]
+  createdAt   DateTime     @default(now())
+  email       String?
+  id          String       @id @default(cuid())
+  password    String?
+  updatedAt   DateTime     @updatedAt
+  username    String?
+}
+
+model Connection {
+  createdAt DateTime              @default(now())
+  endTime   DateTime?
+  id        String                @id @default(cuid())
+  startTime DateTime?
+  status    EnumConnectionStatus?
+  stream    Stream?               @relation(fields: [streamId], references: [id])
+  streamId  String?
+  updatedAt DateTime              @updatedAt
+  user      User?                 @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+enum EnumStreamStatus {
+  Option1
+}
+
+enum EnumConnectionStatus {
+  Option1
+}
